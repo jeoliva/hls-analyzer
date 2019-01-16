@@ -111,7 +111,16 @@ def _parse_key(line):
     return key
 
 def _parse_extinf(line, data, state):
-    duration, title = line.replace(protocol.extinf + ':', '').split(',')
+    parts = line.replace(protocol.extinf + ':', '').split(',')
+
+    try:
+        duration, title = parts
+    except ValueError:
+        ## Title is optional in the HLS spec
+        ## https://tools.ietf.org/html/rfc8216#section-4.3.2.1
+        duration = parts[0]
+        title = ""
+
     state['segment'] = {'duration': float(duration), 'title': remove_quotes(title)}
 
 def _parse_ts_chunk(line, data, state):
