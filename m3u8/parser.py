@@ -49,6 +49,9 @@ def parse(content):
             _parse_byterange(line, state)
             state['expect_segment'] = True
 
+        elif line.startswith(protocol.ext_x_bitrate):
+            state['expect_segment'] = True
+
         elif state['expect_segment']:
             _parse_ts_chunk(line, data, state)
             state['expect_segment'] = False
